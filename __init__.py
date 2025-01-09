@@ -12,6 +12,9 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour les sessions
 def est_authentifie():
     return session.get('authentifie')
 
+def user_authentifie():
+    return session.get('user_authentifie')
+
 @app.route('/')
 def hello_world():
     return render_template('hello.html')
@@ -76,6 +79,24 @@ def enregistrer_client():
     conn.commit()
     conn.close()
     return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement
-                                                                                                                                       
+
+ #@app.route('/rechercher_client',methods=['POST'])
+#def rechercher_client():
+    #if not user_authentifie():
+     #   return
+
+    
+    #nom = request.form['nom']
+
+    #conn = sqlite3.connect('database.db')
+    #cursor = conn.cursor()
+
+    #cursor.execute('SELECT * FROM clients WHERE (?)',(nom))
+    #data = cursor.fetchall()
+    #conn.commit()
+    #conn.close()
+    #return redirect('')
+    
+
 if __name__ == "__main__":
   app.run(debug=True)
