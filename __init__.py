@@ -80,7 +80,14 @@ def enregistrer_client():
     conn.close()
     return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement
 
- #@app.route('/rechercher_client',methods=['POST'])
+
+
+
+@app.route('/fiche_nom/', methods=['GET'])
+def formulaire_client():
+    return render_template('formulaire_utilisateur.html')
+
+ #@app.route('/fiche_nom/',methods=['POST'])
 #def rechercher_client():
     #if not user_authentifie():
      #   return
@@ -91,7 +98,7 @@ def enregistrer_client():
     #conn = sqlite3.connect('database.db')
     #cursor = conn.cursor()
 
-    #cursor.execute('SELECT * FROM clients WHERE (?)',(nom))
+    #cursor.execute('SELECT * FROM clients WHERE nom= ?',(nom))
     #data = cursor.fetchall()
     #conn.commit()
     #conn.close()
