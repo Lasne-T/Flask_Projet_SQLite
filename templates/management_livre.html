@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Livres</title>
+</head>
+<body>
+    <h2>Gestion des Livres</h2>
+    <form action="{{ url_for('manage_books') }}" method="post">
+        <h3>Ajouter un Livre</h3>
+        <label for="titre">Titre:</label><br>
+        <input type="text" id="titre" name="titre"><br>
+        <label for="auteur">Auteur:</label><br>
+        <input type="text" id="auteur" name="auteur"><br>
+        <label for="genre">Genre:</label><br>
+        <input type="text" id="genre" name="genre"><br>
+        <label for="date_publication">Date de Publication:</label><br>
+        <input type="date" id="date_publication" name="date_publication"><br><br>
+        <input type="submit" name="add" value="Ajouter">
+    </form>
+
+    <h3>Supprimer un Livre</h3>
+    <form action="{{ url_for('manage_books') }}" method="post">
+        <label for="livre_id">ID du Livre:</label><br>
+        <input type="number" id="livre_id" name="livre_id"><br><br>
+        <input type="submit" name="delete" value="Supprimer">
+    </form>
+
+    <h3>Liste des Livres</h3>
+    <ul>
+        {% for livre in livres %}
+            <li>{{ livre.id }} - {{ livre.titre }} par {{ livre.auteur }} ({{ livre.genre }}, {{ livre.date_publication }})</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
