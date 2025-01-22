@@ -20,7 +20,7 @@
         <label for="livre_id">Livre:</label><br>
         <select id="livre_id" name="livre_id">
             {% for livre in livres %}
-                <option value="{{ livre.id }}">{{ livre.titre }} par {{ livre.auteur }}</option>
+                <option value="{{ livre.id }}">{{ livre.titre }} par {{ livre.auteur }} ({{ livre.genre }}, {{ livre.date_publication }})</option>
             {% endfor %}
         </select><br><br>
         <input type="submit" value="Emprunter">
