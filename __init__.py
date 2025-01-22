@@ -77,30 +77,28 @@ def enregistrer_client():
     conn.close()
     return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement
 
+@app.route('/manage_books', methods=['GET', 'POST'])
+def manage_books():
+    if request.method == 'POST':
+        conn = get_db_connection()
+        if 'add' in request.form:
+            titre = request.form['titre']
+            auteur = request.form['auteur']
+            genre = request.form['genre']
+            date_publication = request.form['date_publication']
+            conn.execute('INSERT INTO livres (titre, auteur, genre, date_publication, disponible) VALUES (?, ?, ?, ?, ?)',
+                         (titre, auteur, genre, date_publication, 1))
+            conn.commit()
+        elif 'delete' in request.form:
+            livre_id = request.form['livre_id']
+            conn.execute('DELETE FROM livres WHERE id = ?', (livre_id,))
+            conn.commit()
+        conn.close()
 
-
-
-#@app.route('/fiche_nom/', methods=['GET'])
-#def formulaire_client():
- #   return render_template('formulaire_utilisateur.html')
-
- #@app.route('/fiche_nom/',methods=['POST'])
-#def rechercher_client():
-    #if not user_authentifie():
-     #   return
-
-    
-    #nom = request.form['nom']
-
-    #conn = sqlite3.connect('database.db')
-    #cursor = conn.cursor()
-
-    #cursor.execute('SELECT * FROM clients WHERE nom= ?',(nom))
-    #data = cursor.fetchall()
-    #conn.commit()
-    #conn.close()
-    #return redirect('')
-    
+    conn = get_db_connection()
+    livres = conn.execute('SELECT * FROM livres').fetchall()
+    conn.close()
+    return render_template('manage_books.html', livres=livres)
 
 if __name__ == "__main__":
   app.run(debug=True)
