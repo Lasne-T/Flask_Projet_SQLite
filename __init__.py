@@ -80,9 +80,9 @@ def enregistrer_client():
 
 
 
-@app.route('/fiche_nom/', methods=['GET'])
-def formulaire_client():
-    return render_template('formulaire_utilisateur.html')
+#@app.route('/fiche_nom/', methods=['GET'])
+#def formulaire_client():
+ #   return render_template('formulaire_utilisateur.html')
 
  #@app.route('/fiche_nom/',methods=['POST'])
 #def rechercher_client():
