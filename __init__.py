@@ -98,7 +98,7 @@ def management_livre():
     conn = get_db_connection()
     livres = conn.execute('SELECT * FROM livres').fetchall()
     conn.close()
-    return render_template('manage_livre.html', livres=livres)
+    return render_template('management_livre.html', livres=livres)
 
 if __name__ == "__main__":
   app.run(debug=True)
