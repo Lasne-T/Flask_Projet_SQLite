@@ -77,8 +77,8 @@ def enregistrer_client():
     conn.close()
     return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement
 
-@app.route('/manage_books', methods=['GET', 'POST'])
-def manage_books():
+@app.route('/management_livre', methods=['GET', 'POST'])
+def manage_livre():
     if request.method == 'POST':
         conn = get_db_connection()
         if 'add' in request.form:
@@ -98,7 +98,7 @@ def manage_books():
     conn = get_db_connection()
     livres = conn.execute('SELECT * FROM livres').fetchall()
     conn.close()
-    return render_template('manage_books.html', livres=livres)
+    return render_template('manage_livre.html', livres=livres)
 
 if __name__ == "__main__":
   app.run(debug=True)
