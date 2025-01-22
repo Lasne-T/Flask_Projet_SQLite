@@ -100,5 +100,15 @@ def management_livre():
     conn.close()
     return render_template('management_livre.html', livres=livres)
 
+@app.route('/recherche_livre', methods=['GET', 'POST'])
+def recherche_livre():
+    if request.method == 'POST':
+        titre = request.form['titre']
+        conn = sqlite3.connect('database.db')
+        livre = conn.execute('SELECT * FROM livres WHERE titre LIKE ?', ('%' + titre + '%',)).fetchall()
+        conn.close()
+        return render_template('recherche_livre.html', livres=livre, titre=titre)
+    return render_template('recherche_livre.html')
+
 if __name__ == "__main__":
   app.run(debug=True)
