@@ -1,13 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Livres</title>
-</head>
-<body>
-    <h2>Gestion des Livres</h2>
-    <form action="{{ url_for('manage_books') }}" method="post">
+    <form action="{{ url_for('management_livre') }}" method="post">
         <h3>Ajouter un Livre</h3>
         <label for="titre">Titre:</label><br>
         <input type="text" id="titre" name="titre"><br>
@@ -21,7 +12,7 @@
     </form>
 
     <h3>Supprimer un Livre</h3>
-    <form action="{{ url_for('manage_books') }}" method="post">
+    <form action="{{ url_for('management_livre') }}" method="post">
         <label for="livre_id">ID du Livre:</label><br>
         <input type="number" id="livre_id" name="livre_id"><br><br>
         <input type="submit" name="delete" value="Supprimer">
