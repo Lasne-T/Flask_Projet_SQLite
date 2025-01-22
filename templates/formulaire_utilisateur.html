@@ -3,14 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulaire d'enregistrement de recherche d'utilisateur</title>
+    <title>Recherche de Client</title>
 </head>
 <body>
-    <h1>Recherche utilisateur</h1>
-    <form action="./fiche_nom/" method="POST">
-        <label for="nom">Nom :</label>
-        <input type="text" id="nom" name="nom" required><br><br>
-        <button type="submit">Enregistrer</button>
+    <h2>Recherche de Client</h2>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <form action="{{ url_for('search_client') }}" method="post">
+        <label for="nom">Nom du client:</label><br>
+        <input type="text" id="nom" name="nom"><br><br>
+        <input type="submit" value="Rechercher">
     </form>
+
+    {% if client %}
+        <h3>Informations du Client</h3>
+        <p>Nom: {{ client.nom }}</p>
+        <p>Prénom: {{ client.prenom }}</p>
+        <p>Adresse: {{ client.adresse }}</p>
+        <p>Email: {{ client.email }}</p>
+        <p>Téléphone: {{ client.telephone }}</p>
+    {% endif %}
 </body>
 </html>
