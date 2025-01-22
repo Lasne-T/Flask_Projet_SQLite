@@ -115,14 +115,14 @@ def emprunt_livre():
     if request.method == 'POST':
         utilisateur_id = request.form['utilisateur_id']
         livre_id = request.form['livre_id']
-        conn = get_db_connection()
+        conn = sqlite3.connect('database.db')
         conn.execute('INSERT INTO emprunts (utilisateur_id, livre_id, date_emprunt, retour_effectue) VALUES (?, ?, CURRENT_TIMESTAMP, 0)',
                      (utilisateur_id, livre_id))
         conn.execute('UPDATE livres SET disponible = 0 WHERE id = ?', (livre_id,))
         conn.commit()
         conn.close()
         return render_template('emprunt_livre.html', success=True)
-    conn = get_db_connection()
+    conn = sqlite3.connect('database.db')
     livres = conn.execute('SELECT * FROM livres WHERE disponible = 1').fetchall()
     utilisateurs = conn.execute('SELECT * FROM utilisateurs').fetchall()
     conn.close()
