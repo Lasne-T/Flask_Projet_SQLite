@@ -59,10 +59,9 @@
         <h1>Bienvenue à la Bibliothèque</h1>
     </header>
     <nav>
-        <a href="#home">Accueil</a>
-        <a href="#about">À propos</a>
-        <a href="#services">Services</a>
-        <a href="#contact">Contact</a>
+        <a href="{{ url_for('search_book') }}">Recherche de Livre</a>
+        <a href="{{ url_for('management_livre') }}">Gestion des Livres</a>
+        <a href="/">Accueil</a>
     </nav>
     <div class="container">
         <h1>Découvrez un monde de connaissances</h1>
