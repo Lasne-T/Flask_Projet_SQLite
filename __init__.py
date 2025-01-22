@@ -78,7 +78,7 @@ def enregistrer_client():
     return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement
 
 @app.route('/management_livre', methods=['GET', 'POST'])
-def manage_livre():
+def management_livre():
     if request.method == 'POST':
         conn = get_db_connection()
         if 'add' in request.form:
