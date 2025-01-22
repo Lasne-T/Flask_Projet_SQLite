@@ -80,7 +80,7 @@ def enregistrer_client():
 @app.route('/management_livre', methods=['GET', 'POST'])
 def management_livre():
     if request.method == 'POST':
-        conn = get_db_connection()
+        conn = sqlite3.connect('database.db')
         if 'add' in request.form:
             titre = request.form['titre']
             auteur = request.form['auteur']
@@ -95,7 +95,7 @@ def management_livre():
             conn.commit()
         conn.close()
 
-    conn = get_db_connection()
+    conn = sqlite3.connect('database.db')
     livres = conn.execute('SELECT * FROM livres').fetchall()
     conn.close()
     return render_template('management_livre.html', livres=livres)
