@@ -110,5 +110,23 @@ def recherche_livre():
         return render_template('recherche_livre.html', livres=livre, titre=titre)
     return render_template('recherche_livre.html')
 
+@app.route('/emprunt_livre', methods=['GET', 'POST'])
+def emprunt_livre():
+    if request.method == 'POST':
+        utilisateur_id = request.form['utilisateur_id']
+        livre_id = request.form['livre_id']
+        conn = get_db_connection()
+        conn.execute('INSERT INTO emprunts (utilisateur_id, livre_id, date_emprunt, retour_effectue) VALUES (?, ?, CURRENT_TIMESTAMP, 0)',
+                     (utilisateur_id, livre_id))
+        conn.execute('UPDATE livres SET disponible = 0 WHERE id = ?', (livre_id,))
+        conn.commit()
+        conn.close()
+        return render_template('emprunt_livre.html', success=True)
+    conn = get_db_connection()
+    livres = conn.execute('SELECT * FROM livres WHERE disponible = 1').fetchall()
+    utilisateurs = conn.execute('SELECT * FROM utilisateurs').fetchall()
+    conn.close()
+    return render_template('emprunt_livre.html', livres=livres, utilisateurs=utilisateurs)
+
 if __name__ == "__main__":
   app.run(debug=True)
