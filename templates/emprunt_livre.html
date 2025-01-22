@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emprunt de Livre</title>
+</head>
+<body>
+    <h2>Emprunt de Livre</h2>
+    {% if success %}
+        <p style="color: green;">Le livre a été emprunté avec succès.</p>
+    {% endif %}
+    <form action="{{ url_for('emprunt_livre') }}" method="post">
+        <label for="utilisateur_id">Utilisateur:</label><br>
+        <select id="utilisateur_id" name="utilisateur_id">
+            {% for utilisateur in utilisateurs %}
+                <option value="{{ utilisateur.id }}">{{ utilisateur.nom }} {{ utilisateur.prenom }}</option>
+            {% endfor %}
+        </select><br><br>
+        <label for="livre_id">Livre:</label><br>
+        <select id="livre_id" name="livre_id">
+            {% for livre in livres %}
+                <option value="{{ livre.id }}">{{ livre.titre }} par {{ livre.auteur }}</option>
+            {% endfor %}
+        </select><br><br>
+        <input type="submit" value="Emprunter">
+    </form>
+</body>
+</html>
