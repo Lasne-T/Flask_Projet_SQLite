@@ -1,1 +1,28 @@
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche de Livre</title>
+</head>
+<body>
+    <h2>Recherche de Livre</h2>
+    <form action="{{ url_for('search_book') }}" method="post">
+        <label for="titre">Titre du livre:</label><br>
+        <input type="text" id="titre" name="titre"><br><br>
+        <input type="submit" value="Rechercher">
+    </form>
+
+    {% if livres %}
+        <h3>Résultats de la recherche pour "{{ titre }}"</h3>
+        <ul>
+            {% for livre in livres %}
+                <li>{{ livre.titre }} par {{ livre.auteur }} ({{ livre.genre }}, {{ livre.date_publication }})</li>
+            {% endfor %}
+        </ul>
+    {% elif titre %}
+        <p>Aucun livre trouvé pour "{{ titre }}".</p>
+    {% endif %}
+</body>
+</html>
