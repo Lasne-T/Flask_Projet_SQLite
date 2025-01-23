@@ -85,8 +85,16 @@ def create_livre():
     )
     conn.commit()
     new_id = cursor.lastrowid
+
+    # Ajouter le nouveau livre dans les stocks avec une quantité initiale
+    cursor.execute(
+        "INSERT INTO stocks (livre_id, quantite) VALUES (?, ?)",
+        (new_id, 0)  # Initialisation du stock à 0
+    )
+    conn.commit()
+
     conn.close()
-    return jsonify({'message': 'Livre créé avec succès', 'id': new_id}), 201
+    return jsonify({'message': 'Livre créé et ajouté au stock avec succès', 'id': new_id}), 201
 
 @app.route('/api/livres/<int:livre_id>', methods=['PUT'])
 def update_livre(livre_id):
