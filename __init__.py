@@ -93,7 +93,7 @@ def create_livre():
     # Ajouter le nouveau livre dans les stocks avec une quantité initiale
     cursor.execute(
         "INSERT INTO stocks (livre_id, quantite) VALUES (?, ?)",
-        (new_id, 0)  # Initialisation du stock à 0
+        (new_id, 1)  # Initialisation du stock à 0
     )
     conn.commit()
 
