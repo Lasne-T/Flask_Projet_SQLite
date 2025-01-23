@@ -142,6 +142,46 @@ def recherche_livre():
 
     return render_template('recherche_livre.html')
 
+@app.route('/ajouter_livre', methods=['POST'])
+def ajouter_livre():
+    """Ajouter un livre."""
+    titre = request.form['titre']
+    auteur = request.form['auteur']
+    genre = request.form['genre']
+    date_publication = request.form['date_publication']
+
+    if not all([titre, auteur, genre, date_publication]):
+        return redirect(url_for('gestion_livres'))
+
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO livres (titre, auteur, genre, date_publication, disponible) VALUES (?, ?, ?, ?, ?)",
+        (titre, auteur, genre, date_publication, 1)
+    )
+    conn.commit()
+    conn.close()
+    return redirect(url_for('gestion_livres'))
+
+@app.route('/supprimer_livre', methods=['POST'])
+def supprimer_livre():
+    """Supprimer un livre."""
+    livre_id = request.form['id']
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM livres WHERE id = ?", (livre_id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('gestion_livres'))
+
+@app.route('/gestion_livres')
+def gestion_livres():
+    """Afficher la page de gestion des livres."""
+    conn = create_connection()
+    livres = conn.execute("SELECT * FROM livres").fetchall()
+    conn.close()
+    return render_template('gestion_livres.html', livres=livres)
+
 if __name__ == "__main__":
     init_db()
     app.run(debug=True)
