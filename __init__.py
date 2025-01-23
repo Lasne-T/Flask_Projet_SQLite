@@ -182,7 +182,7 @@ def gestion_livres():
     conn.close()
     return render_template('gestion_livres.html', livres=livres)
     
-    @app.route('/gestion_stocks', methods=['GET'])
+@app.route('/gestion_stocks', methods=['GET'])
 def gestion_stocks():
     """Afficher les stocks de livres avec un tableau et des graphiques."""
     conn = create_connection()
@@ -202,6 +202,7 @@ def gestion_stocks():
     }
 
     return render_template('gestion_stocks.html', stocks=stocks, stock_data=stock_data)
+
 
 
 if __name__ == "__main__":
