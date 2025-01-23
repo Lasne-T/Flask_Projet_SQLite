@@ -33,7 +33,7 @@ def init_db():
 def hello_world():
     return render_template('hello.html')
     
-@app.route('/livres', methods=['GET'])
+@app.route('/api/livres', methods=['GET'])
 def get_livres():
     """Récupérer tous les livres."""
     conn = create_connection()
@@ -65,7 +65,7 @@ def get_livre(livre_id):
         })
     return jsonify({'error': 'Livre non trouvé'}), 404
 
-@app.route('/livres', methods=['POST'])
+@app.route('/api/livres', methods=['POST'])
 def create_livre():
     """Créer un nouveau livre."""
     data = request.get_json()
@@ -88,7 +88,7 @@ def create_livre():
     conn.close()
     return jsonify({'message': 'Livre créé avec succès', 'id': new_id}), 201
 
-@app.route('/livres/<int:livre_id>', methods=['PUT'])
+@app.route('/api/livres/<int:livre_id>', methods=['PUT'])
 def update_livre(livre_id):
     """Mettre à jour les informations d'un livre."""
     data = request.get_json()
