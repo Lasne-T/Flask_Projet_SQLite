@@ -27,6 +27,10 @@ def init_db():
         conn = create_connection()
         with open('schema2.sql') as f:
             conn.executescript(f.read())
+        # Initialiser les stocks pour tous les livres existants
+        cursor = conn.cursor()
+        cursor.execute("INSERT OR IGNORE INTO stocks (livre_id, quantite) SELECT id, 0 FROM livres")
+
         conn.close()
         
 @app.route('/')
