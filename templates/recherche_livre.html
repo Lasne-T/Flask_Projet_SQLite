@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recherche de Livre</title>
     <style>
-        /* Colle ici le code CSS commun */
-        /* Styles généraux */
+        /* Style général */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
@@ -14,10 +13,10 @@
             padding: 0;
         }
 
-        /* En-tête */
-        h2 {
+        h1 {
             text-align: center;
             color: #4CAF50;
+            margin-top: 20px;
         }
 
         /* Formulaire */
@@ -31,9 +30,9 @@
         }
 
         label {
+            font-weight: bold;
             display: block;
             margin-bottom: 8px;
-            font-weight: bold;
         }
 
         input[type="text"] {
@@ -57,15 +56,15 @@
             background-color: #45a049;
         }
 
-        /* Résultats de recherche */
-        ul {
+        /* Résultats */
+        .results {
             max-width: 600px;
             margin: 20px auto;
             padding: 0;
             list-style-type: none;
         }
 
-        li {
+        .results li {
             background-color: #fff;
             margin-bottom: 10px;
             padding: 15px;
@@ -73,29 +72,42 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        li p {
+        .results li p {
             margin: 0;
             color: #333;
+        }
+
+        .no-results {
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: center;
+            color: #555;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <h2>Recherche de Livre</h2>
-    <form action="{{ url_for('recherche_livre') }}" method="post">
-        <label for="titre">Titre du livre:</label><br>
-        <input type="text" id="titre" name="titre"><br><br>
+    <h1>Recherche de Livre</h1>
+    <form action="/recherche_livre" method="post">
+        <label for="titre">Titre du livre:</label>
+        <input type="text" id="titre" name="titre" placeholder="Entrez le titre du livre" required>
         <input type="submit" value="Rechercher">
     </form>
 
+    <!-- Résultats de la recherche -->
     {% if livres %}
-        <h3>Résultats de la recherche pour "{{ titre }}"</h3>
-        <ul>
+        <ul class="results">
             {% for livre in livres %}
-                <li>{{ livre.titre }} par {{ livre.auteur }} ({{ livre.genre }}, {{ livre.date_publication }})</li>
+                <li>
+                    <p><strong>{{ livre[1] }}</strong></p>
+                    <p>Auteur: {{ livre[2] }}</p>
+                    <p>Genre: {{ livre[3] }}</p>
+                    <p>Publié le: {{ livre[4] }}</p>
+                </li>
             {% endfor %}
         </ul>
     {% elif titre %}
-        <p>Aucun livre trouvé pour "{{ titre }}".</p>
+        <div class="no-results">Aucun livre trouvé pour "{{ titre }}"</div>
     {% endif %}
 </body>
 </html>
