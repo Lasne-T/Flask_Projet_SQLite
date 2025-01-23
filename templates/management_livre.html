@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emprunt de Livre</title>
+    <title>Gestion des Livres</title>
     <style>
-        /* Colle ici le code CSS commun */
-        /* Styles généraux */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
@@ -14,32 +12,32 @@
             padding: 0;
         }
 
-        /* En-tête */
-        h2 {
+        h1 {
             text-align: center;
             color: #4CAF50;
+            margin-top: 20px;
         }
 
-        /* Formulaire */
-        form {
-            max-width: 600px;
+        .container {
+            max-width: 800px;
             margin: 20px auto;
-            padding: 20px;
             background-color: #fff;
+            padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
+        form {
+            margin-bottom: 30px;
         }
 
-        input[type="text"],
-        input[type="date"],
-        input[type="number"],
-        select {
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"], input[type="date"], input[type="number"] {
             width: 100%;
             padding: 10px;
             margin-bottom: 20px;
@@ -60,59 +58,70 @@
             background-color: #45a049;
         }
 
-        /* Message de succès */
-        p {
-            text-align: center;
-            font-weight: bold;
+        .books-list {
+            list-style-type: none;
+            padding: 0;
         }
 
-        /* Boutons de navigation */
-        nav {
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        nav a {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            margin: 5px;
-            text-decoration: none;
+        .books-list li {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ccc;
             border-radius: 4px;
-            display: inline-block;
+            display: flex;
+            justify-content: space-between;
         }
 
-        nav a:hover {
-            background-color: #45a049;
+        .books-list li button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
         }
-        </style>
-    </head>
+
+        .books-list li button:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
 <body>
-<form action="{{ url_for('management_livre') }}" method="post">
-        <h3>Ajouter un Livre</h3>
-        <label for="titre">Titre:</label><br>
-        <input type="text" id="titre" name="titre"><br>
-        <label for="auteur">Auteur:</label><br>
-        <input type="text" id="auteur" name="auteur"><br>
-        <label for="genre">Genre:</label><br>
-        <input type="text" id="genre" name="genre"><br>
-        <label for="date_publication">Date de Publication:</label><br>
-        <input type="date" id="date_publication" name="date_publication"><br><br>
-        <input type="submit" name="add" value="Ajouter">
-    </form>
+    <h1>Gestion des Livres</h1>
+    <div class="container">
+        <h2>Ajouter un Livre</h2>
+        <form action="/ajouter_livre" method="post">
+            <label for="titre">Titre</label>
+            <input type="text" id="titre" name="titre" required>
 
-    <h3>Supprimer un Livre</h3>
-    <form action="{{ url_for('management_livre') }}" method="post">
-        <label for="livre_id">ID du Livre:</label><br>
-        <input type="number" id="livre_id" name="livre_id"><br><br>
-        <input type="submit" name="delete" value="Supprimer">
-    </form>
+            <label for="auteur">Auteur</label>
+            <input type="text" id="auteur" name="auteur" required>
 
-    <h3>Liste des Livres</h3>
-    <ul>
-        {% for livre in livres %}
-            <li>{{ livre.id }} - {{ livre.titre }} par {{ livre.auteur }} ({{ livre.genre }}, {{ livre.date_publication }})</li>
-        {% endfor %}
-    </ul>
+            <label for="genre">Genre</label>
+            <input type="text" id="genre" name="genre" required>
+
+            <label for="date_publication">Date de Publication</label>
+            <input type="date" id="date_publication" name="date_publication" required>
+
+            <input type="submit" value="Ajouter">
+        </form>
+
+        <h2>Liste des Livres</h2>
+        <ul class="books-list">
+            {% for livre in livres %}
+            <li>
+                <div>
+                    <strong>{{ livre[1] }}</strong> par {{ livre[2] }} ({{ livre[3] }})<br>
+                    Publié le : {{ livre[4] }}
+                </div>
+                <form action="/supprimer_livre" method="post" style="margin: 0;">
+                    <input type="hidden" name="id" value="{{ livre[0] }}">
+                    <button type="submit">Supprimer</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 </body>
 </html>
