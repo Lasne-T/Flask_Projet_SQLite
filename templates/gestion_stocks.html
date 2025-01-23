@@ -51,54 +51,55 @@
 <body>
     <h2>Gestion des Stocks</h2>
     <table>
-        <thead>
-            <tr>
-                <th>ID Livre</th>
-                <th>Titre</th>
-                <th>Auteur</th>
-                <th>Quantité en Stock</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for stock in stocks %}
-                <tr>
-                    <td>{{ stock.id }}</td>
-                    <td>{{ stock.titre }}</td>
-                    <td>{{ stock.auteur }}</td>
-                    <td>{{ stock.quantite }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Titre</th>
+            <th>Auteur</th>
+            <th>Quantité</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for stock in stocks %}
+        <tr>
+            <td>{{ stock[0] }}</td>
+            <td>{{ stock[1] }}</td>
+            <td>{{ stock[2] }}</td>
+            <td>{{ stock[3] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
     <div class="chart-container">
         <canvas id="stockChart"></canvas>
     </div>
 
     <script>
-        const stockData = {{ stock_data | tojson }};
-        const ctx = document.getElementById('stockChart').getContext('2d');
+        const stockData = {{ stock_data|tojson }};
+const ctx = document.getElementById('stockChart').getContext('2d');
 
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: stockData.labels,
-                datasets: [{
-                    label: 'Quantité en Stock',
-                    data: stockData.quantities,
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: stockData.labels, // Les noms des livres
+        datasets: [{
+            label: 'Quantité en stock',
+            data: stockData.quantities,
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
             }
-        });
+        }
+    }
+});
     </script>
 </body>
 </html>
