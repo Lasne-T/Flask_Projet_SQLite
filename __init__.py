@@ -285,24 +285,9 @@ def supprimer_livre():
 @app.route('/gestion_livres')
 def gestion_livres():
     """Afficher la page de gestion des livres."""
-     titre = request.args.get('titre', '')
     conn = create_connection()
-    livres = conn.execute("SELECT * FROM livres WHERE titre LIKE ?", (f'%{titre}%',)).fetchall()
+ livres = conn.execute("SELECT * FROM livres").fetchall()
     conn.close()
-
- if not livres:
-        return jsonify({'message': 'Aucun livre trouvé'}), 404
-     
-
-
-return jsonify([{
-        'id': livre[0],
-        'titre': livre[1],
-        'auteur': livre[2],
-        'genre': livre[3],
-        'date_publication': livre[4],
-        'disponible': bool(livre[5])
-    } for livre in livres])
     return render_template('gestion_livres.html', livres=livres)
 
 @app.route('/api/emprunter', methods=['POST'])
