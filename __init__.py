@@ -62,23 +62,23 @@ def create_utilisateur():
     except sqlite3.IntegrityError:
         return jsonify({'error': 'Cet email est déjà utilisé'}), 400
 
-def require_admin(f):
-    """Vérifie que l'utilisateur a le rôle administrateur."""
-    def wrapper(*args, **kwargs):
-        utilisateur_id = request.headers.get('Utilisateur-ID')  # Doit être envoyé dans l'en-tête de la requête
-        if not utilisateur_id:
-            return jsonify({'error': 'Utilisateur non authentifié'}), 401
+#def require_admin(f):
+ #   """Vérifie que l'utilisateur a le rôle administrateur."""
+  #  def wrapper(*args, **kwargs):
+   #     utilisateur_id = request.headers.get('Utilisateur-ID')  # Doit être envoyé dans l'en-tête de la requête
+    #    if not utilisateur_id:
+     #       return jsonify({'error': 'Utilisateur non authentifié'}), 401
+#
+ #       conn = create_connection()
+  #      utilisateur = conn.execute("SELECT role FROM utilisateurs WHERE id = ?", (utilisateur_id,)).fetchone()
+   #     conn.close()
 
-        conn = create_connection()
-        utilisateur = conn.execute("SELECT role FROM utilisateurs WHERE id = ?", (utilisateur_id,)).fetchone()
-        conn.close()
+    #    if not utilisateur or utilisateur[0] != 'administrateur':
+     #       return jsonify({'error': 'Accès refusé, administrateur requis'}), 403
 
-        if not utilisateur or utilisateur[0] != 'administrateur':
-            return jsonify({'error': 'Accès refusé, administrateur requis'}), 403
+      #  return f(*args, **kwargs)
 
-        return f(*args, **kwargs)
-
-    return wrapper
+   # return wrapper
 
 
 
@@ -283,7 +283,6 @@ def supprimer_livre():
     return redirect(url_for('gestion_livres'))
 
 @app.route('/gestion_livres')
-@require_admin
 def gestion_livres():
     """Afficher la page de gestion des livres."""
     conn = create_connection()
@@ -369,7 +368,20 @@ def get_emprunts():
         'date_emprunt': e[3], 'date_retour': e[4] if e[4] else 'En cours'
     } for e in emprunts])
 
+@app.route('/gestion_stocks', methods=['GET'])
+def get_stocks():
+    """Récupérer l'état du stock des livres."""
+    conn = create_connection()
+    stocks = conn.execute("""
+        SELECT l.titre, s.quantite FROM stocks s
+        JOIN livres l ON s.livre_id = l.id
+    """).fetchall()
+    conn.close()
 
+    return jsonify([{'titre': s[0], 'quantite': s[1]} for s in stocks])
+
+
+    return render_template('gestion_stocks.html', stocks=stocks, stock_data=stock_data)
     
 
 
