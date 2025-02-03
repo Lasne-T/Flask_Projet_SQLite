@@ -37,18 +37,24 @@ def init_db():
 
 @app.route('/api/utilisateurs', methods=['POST'])
 def create_utilisateur():
-    """Ajouter un utilisateur."""
+    """Ajouter un utilisateur avec un téléphone et un rôle."""
     data = request.get_json()
     nom = data.get('nom')
     email = data.get('email')
+    telephone = data.get('telephone')
+    role = data.get('role', 'utilisateur')  # Valeur par défaut = utilisateur
 
-    if not nom or not email:
-        return jsonify({'error': 'Nom et email sont requis'}), 400
+    if not nom or not email or not telephone:
+        return jsonify({'error': 'Nom, email et téléphone sont requis'}), 400
+
+    if role not in ['administrateur', 'utilisateur']:
+        return jsonify({'error': 'Rôle invalide'}), 400
 
     conn = create_connection()
     cursor = conn.cursor()
     try:
-        cursor.execute("INSERT INTO utilisateurs (nom, email) VALUES (?, ?)", (nom, email))
+        cursor.execute("INSERT INTO utilisateurs (nom, email, telephone, role) VALUES (?, ?, ?, ?)", 
+                       (nom, email, telephone, role))
         conn.commit()
         utilisateur_id = cursor.lastrowid
         conn.close()
