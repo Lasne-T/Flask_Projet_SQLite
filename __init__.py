@@ -322,6 +322,38 @@ def emprunter_livre():
 
     return jsonify({'message': 'Livre emprunté avec succès'}), 201
 
+@app.route('/api/retourner', methods=['POST'])
+def retourner_livre():
+    """Permet à un utilisateur de retourner un livre emprunté."""
+    data = request.get_json()
+    emprunt_id = data.get('emprunt_id')
+
+    if not emprunt_id:
+        return jsonify({'error': 'ID emprunt requis'}), 400
+
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    # Vérifier l'existence de l’emprunt
+    cursor.execute("SELECT livre_id FROM emprunts WHERE id = ? AND date_retour IS NULL", (emprunt_id,))
+    emprunt = cursor.fetchone()
+
+    if not emprunt:
+        return jsonify({'error': 'Aucun emprunt en cours trouvé'}), 400
+
+    livre_id = emprunt[0]
+
+    # Mettre à jour l'emprunt pour enregistrer le retour
+    cursor.execute("UPDATE emprunts SET date_retour = CURRENT_TIMESTAMP WHERE id = ?", (emprunt_id,))
+    # Remettre à jour le stock
+    cursor.execute("UPDATE stocks SET quantite = quantite + 1 WHERE livre_id = ?", (livre_id,))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({'message': 'Livre retourné avec succès'}), 200
+
+
     
 @app.route('/gestion_stocks', methods=['GET'])
 @require_admin
