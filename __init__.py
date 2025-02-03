@@ -371,22 +371,6 @@ def get_emprunts():
 
 
     
-@app.route('/gestion_stocks', methods=['GET'])
-@require_admin
-def get_stocks():
-    """Récupérer l'état du stock des livres."""
-    conn = create_connection()
-    stocks = conn.execute("""
-        SELECT l.titre, s.quantite FROM stocks s
-        JOIN livres l ON s.livre_id = l.id
-    """).fetchall()
-    conn.close()
-
-    return jsonify([{'titre': s[0], 'quantite': s[1]} for s in stocks])
-
-
-    return render_template('gestion_stocks.html', stocks=stocks, stock_data=stock_data)
-
 
 
 if __name__ == "__main__":
