@@ -70,62 +70,44 @@
 
     <div class="container">
         <h1>Ajouter un Utilisateur</h1>
-        <form id="userForm">
-            <label for="name">Nom:</label>
-            <input type="text" id="name" name="name" required>
+       <form id="userForm">
+    <label>Nom :</label>
+    <input type="text" id="nom" required><br>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+    <label>Email :</label>
+    <input type="email" id="email" required><br>
 
-            <button type="submit">Ajouter</button>
-        </form>
+    <label>Téléphone :</label>
+    <input type="text" id="telephone" required><br>
 
-        <div class="user-list">
-            <h2>Liste des utilisateurs</h2>
-            <ul id="userList">
-                <!-- La liste des utilisateurs sera affichée ici -->
-            </ul>
-        </div>
-    </div>
+    <label>Rôle :</label>
+    <select id="role">
+        <option value="utilisateur">Utilisateur</option>
+        <option value="administrateur">Administrateur</option>
+    </select><br>
 
-    <script>
-        // Initialisation des utilisateurs
-        let users = [];
+    <button type="submit">Ajouter</button>
+</form>
 
-        // Fonction pour mettre à jour l'affichage de la liste des utilisateurs
-        function updateUserList() {
-            const userListElement = document.getElementById('userList');
-            userListElement.innerHTML = ''; // Réinitialiser la liste
+<script>
+document.getElementById('userForm').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-            users.forEach(user => {
-                const li = document.createElement('li');
-                li.textContent = `Nom: ${user.name}, Email: ${user.email}`;
-                userListElement.appendChild(li);
-            });
-        }
-
-        // Gestionnaire de soumission du formulaire
-        document.getElementById('userForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Empêche le rechargement de la page
-
-            // Récupérer les valeurs des champs du formulaire
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-
-            // Ajouter un nouvel utilisateur
-            const newUser = { name, email };
-            users.push(newUser);
-
-            // Mettre à jour la liste affichée
-            updateUserList();
-
-            // Réinitialiser le formulaire
-            document.getElementById('userForm').reset();
-        });
-
-        // Initialisation de la liste dès le début
-        updateUserList();
-    </script>
+    fetch('/api/utilisateurs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            nom: document.getElementById('nom').value,
+            email: document.getElementById('email').value,
+            telephone: document.getElementById('telephone').value,
+            role: document.getElementById('role').value
+        })
+    })
+    .then(response => response.json())
+    .then(data => alert(data.message || data.error))
+    .catch(error => console.error('Erreur:', error));
+});
+</script>
 
 </body>
 </html>
