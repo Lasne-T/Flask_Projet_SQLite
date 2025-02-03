@@ -173,6 +173,20 @@ def delete_livre(livre_id):
 
     return jsonify({'message': 'Livre supprimé avec succès'})
 
+
+
+@app.route('/api/utilisateurs', methods=['GET'])
+def get_utilisateurs():
+    """Récupérer tous les utilisateurs avec leur téléphone et rôle."""
+    conn = create_connection()
+    utilisateurs = conn.execute("SELECT * FROM utilisateurs").fetchall()
+    conn.close()
+    
+    return jsonify([{
+        'id': u[0], 'nom': u[1], 'email': u[2], 'telephone': u[3], 'role': u[4], 'date_inscription': u[5]
+    } for u in utilisateurs])
+
+
 @app.route('/recherche_livre', methods=['GET', 'POST'])
 def recherche_livre():
     """Rechercher un livre par titre."""
