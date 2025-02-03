@@ -204,7 +204,7 @@ def get_utilisateurs():
     return jsonify([{
         'id': u[0], 'nom': u[1], 'email': u[2], 'telephone': u[3], 'role': u[4], 'date_inscription': u[5]
     } for u in utilisateurs])
-
+return render_template('gestion_utilisateurs.html', utilisateurs=utilisateurs)
 
 
 @app.route('/api/utilisateurs/<int:utilisateur_id>', methods=['PUT'])
