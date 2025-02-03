@@ -242,9 +242,8 @@ def update_utilisateur(utilisateur_id):
 def recherche_livre():
     """Rechercher un livre par titre."""
     if request.method == 'POST':
-        titre = request.form['titre']
         conn = create_connection()
-        livres = conn.execute("SELECT * FROM livres WHERE titre LIKE ?", (f'%{titre}%',)).fetchall()
+         livres = conn.execute("SELECT * FROM livres").fetchall()
         conn.close()
         return render_template('recherche_livre.html', livres=livres, titre=titre)
 
