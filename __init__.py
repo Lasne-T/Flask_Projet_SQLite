@@ -353,6 +353,23 @@ def retourner_livre():
 
     return jsonify({'message': 'Livre retourné avec succès'}), 200
 
+@app.route('/api/emprunts', methods=['GET'])
+def get_emprunts():
+    """Récupérer la liste des emprunts en cours et terminés."""
+    conn = create_connection()
+    emprunts = conn.execute("""
+        SELECT e.id, u.nom, l.titre, e.date_emprunt, e.date_retour
+        FROM emprunts e
+        JOIN utilisateurs u ON e.utilisateur_id = u.id
+        JOIN livres l ON e.livre_id = l.id
+    """).fetchall()
+    conn.close()
+
+    return jsonify([{
+        'id': e[0], 'utilisateur': e[1], 'livre': e[2],
+        'date_emprunt': e[3], 'date_retour': e[4] if e[4] else 'En cours'
+    } for e in emprunts])
+
 
     
 @app.route('/gestion_stocks', methods=['GET'])
