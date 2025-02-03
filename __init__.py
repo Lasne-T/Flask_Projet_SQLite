@@ -62,6 +62,25 @@ def create_utilisateur():
     except sqlite3.IntegrityError:
         return jsonify({'error': 'Cet email est déjà utilisé'}), 400
 
+def require_admin(f):
+    """Vérifie que l'utilisateur a le rôle administrateur."""
+    def wrapper(*args, **kwargs):
+        utilisateur_id = request.headers.get('Utilisateur-ID')  # Doit être envoyé dans l'en-tête de la requête
+        if not utilisateur_id:
+            return jsonify({'error': 'Utilisateur non authentifié'}), 401
+
+        conn = create_connection()
+        utilisateur = conn.execute("SELECT role FROM utilisateurs WHERE id = ?", (utilisateur_id,)).fetchone()
+        conn.close()
+
+        if not utilisateur or utilisateur[0] != 'administrateur':
+            return jsonify({'error': 'Accès refusé, administrateur requis'}), 403
+
+        return f(*args, **kwargs)
+
+    return wrapper
+
+
 
         
 @app.route('/')
@@ -187,6 +206,39 @@ def get_utilisateurs():
     } for u in utilisateurs])
 
 
+
+@app.route('/api/utilisateurs/<int:utilisateur_id>', methods=['PUT'])
+def update_utilisateur(utilisateur_id):
+    """Mettre à jour le rôle ou le téléphone d'un utilisateur."""
+    data = request.get_json()
+    telephone = data.get('telephone')
+    role = data.get('role')
+
+    if not telephone and not role:
+        return jsonify({'error': 'Aucune donnée fournie'}), 400
+
+    if role and role not in ['administrateur', 'utilisateur']:
+        return jsonify({'error': 'Rôle invalide'}), 400
+
+    conn = create_connection()
+    cursor = conn.cursor()
+    if telephone and role:
+        cursor.execute("UPDATE utilisateurs SET telephone = ?, role = ? WHERE id = ?", (telephone, role, utilisateur_id))
+    elif telephone:
+        cursor.execute("UPDATE utilisateurs SET telephone = ? WHERE id = ?", (telephone, utilisateur_id))
+    elif role:
+        cursor.execute("UPDATE utilisateurs SET role = ? WHERE id = ?", (role, utilisateur_id))
+
+    conn.commit()
+    conn.close()
+
+    if cursor.rowcount == 0:
+        return jsonify({'error': 'Utilisateur non trouvé'}), 404
+
+    return jsonify({'message': 'Utilisateur mis à jour avec succès'})
+
+
+
 @app.route('/recherche_livre', methods=['GET', 'POST'])
 def recherche_livre():
     """Rechercher un livre par titre."""
@@ -232,6 +284,7 @@ def supprimer_livre():
     return redirect(url_for('gestion_livres'))
 
 @app.route('/gestion_livres')
+@require_admin
 def gestion_livres():
     """Afficher la page de gestion des livres."""
     conn = create_connection()
@@ -240,6 +293,7 @@ def gestion_livres():
     return render_template('gestion_livres.html', livres=livres)
     
 @app.route('/gestion_stocks', methods=['GET'])
+@require_admin
 def gestion_stocks():
     """Afficher les stocks de livres avec un tableau et des graphiques."""
     conn = create_connection()
