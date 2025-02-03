@@ -25,16 +25,16 @@ CREATE TABLE IF NOT EXISTS utilisateurs (
 
 
 
-CREATE TABLE emprunts (
+CREATE TABLE IF NOT EXISTS emprunts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     utilisateur_id INTEGER NOT NULL,
     livre_id INTEGER NOT NULL,
-    date_emprunt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    date_retour TIMESTAMP,
-    retour_effectue BOOLEAN NOT NULL DEFAULT 0,
-    FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id),
-    FOREIGN KEY (livre_id) REFERENCES livres(id)
+    date_emprunt TEXT DEFAULT CURRENT_TIMESTAMP,
+    date_retour TEXT,
+    FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs (id),
+    FOREIGN KEY (livre_id) REFERENCES livres (id)
 );
+
 
 
 CREATE TABLE stocks (
