@@ -291,6 +291,37 @@ def gestion_livres():
     livres = conn.execute("SELECT * FROM livres").fetchall()
     conn.close()
     return render_template('gestion_livres.html', livres=livres)
+
+@app.route('/api/emprunter', methods=['POST'])
+def emprunter_livre():
+    """Permet à un utilisateur d'emprunter un livre."""
+    data = request.get_json()
+    utilisateur_id = data.get('utilisateur_id')
+    livre_id = data.get('livre_id')
+
+    if not utilisateur_id or not livre_id:
+        return jsonify({'error': 'Utilisateur et livre requis'}), 400
+
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    # Vérifier si le livre est disponible
+    cursor.execute("SELECT quantite FROM stocks WHERE livre_id = ?", (livre_id,))
+    stock = cursor.fetchone()
+
+    if not stock or stock[0] <= 0:
+        return jsonify({'error': 'Livre indisponible'}), 400
+
+    # Enregistrer l’emprunt
+    cursor.execute("INSERT INTO emprunts (utilisateur_id, livre_id) VALUES (?, ?)", (utilisateur_id, livre_id))
+    # Mettre à jour le stock
+    cursor.execute("UPDATE stocks SET quantite = quantite - 1 WHERE livre_id = ?", (livre_id,))
+    
+    conn.commit()
+    conn.close()
+
+    return jsonify({'message': 'Livre emprunté avec succès'}), 201
+
     
 @app.route('/gestion_stocks', methods=['GET'])
 @require_admin
