@@ -32,6 +32,31 @@ def init_db():
         cursor.execute("INSERT OR IGNORE INTO stocks (livre_id, quantite) SELECT id, 0 FROM livres")
 
         conn.close()
+
+
+
+@app.route('/api/utilisateurs', methods=['POST'])
+def create_utilisateur():
+    """Ajouter un utilisateur."""
+    data = request.get_json()
+    nom = data.get('nom')
+    email = data.get('email')
+
+    if not nom or not email:
+        return jsonify({'error': 'Nom et email sont requis'}), 400
+
+    conn = create_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("INSERT INTO utilisateurs (nom, email) VALUES (?, ?)", (nom, email))
+        conn.commit()
+        utilisateur_id = cursor.lastrowid
+        conn.close()
+        return jsonify({'message': 'Utilisateur ajouté avec succès', 'id': utilisateur_id}), 201
+    except sqlite3.IntegrityError:
+        return jsonify({'error': 'Cet email est déjà utilisé'}), 400
+
+
         
 @app.route('/')
 def hello_world():
