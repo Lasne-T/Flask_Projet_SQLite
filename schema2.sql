@@ -14,14 +14,15 @@ CREATE TABLE livres (
 );
 
 
-CREATE TABLE utilisateurs (
+CREATE TABLE IF NOT EXISTS utilisateurs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nom TEXT NOT NULL,
-    prenom TEXT NOT NULL,
-    email TEXT NOT NULL UNIQUE,
-    telephone TEXT,
-    role TEXT NOT NULL CHECK (role IN ('Utilisateur', 'Administrateur'))
+    email TEXT UNIQUE NOT NULL,
+    telephone TEXT NOT NULL,
+    role TEXT CHECK(role IN ('administrateur', 'utilisateur')) NOT NULL DEFAULT 'utilisateur',
+    date_inscription TEXT DEFAULT CURRENT_TIMESTAMP
 );
+
 
 
 CREATE TABLE emprunts (
