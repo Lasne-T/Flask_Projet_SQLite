@@ -3,111 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajout d'utilisateurs</title>
+    <title>Gestion des Utilisateurs</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
             background-color: #f4f4f4;
+            text-align: center;
         }
         .container {
             width: 60%;
-            margin: 50px auto;
-            background-color: #fff;
+            margin: auto;
+            background: white;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        h1 {
-            text-align: center;
-        }
-        form {
-            margin-bottom: 20px;
-        }
-        label {
-            font-size: 1.1em;
-            margin-bottom: 5px;
-        }
-        input[type="text"],
-        input[type="email"] {
+        table {
             width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1em;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1.1em;
-            cursor: pointer;
-            border-radius: 4px;
+        table, th, td {
+            border: 1px solid black;
         }
-        button:hover {
-            background-color: #45a049;
-        }
-        .user-list {
-            margin-top: 30px;
-        }
-        .user-list ul {
-            list-style: none;
-            padding: 0;
-        }
-        .user-list li {
+        th, td {
             padding: 10px;
-            background-color: #f9f9f9;
-            margin: 5px 0;
-            border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: left;
         }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <h1>Ajouter un Utilisateur</h1>
-       <form id="userForm">
-    <label>Nom :</label>
-    <input type="text" id="nom" required><br>
+        <h2>Gestion des Utilisateurs</h2>
+        
+        <div id="loginForm">
+            <h3>Connexion Administrateur</h3>
+            <input type="email" id="adminEmail" placeholder="Email">
+            <input type="password" id="adminPassword" placeholder="Mot de passe">
+            <button onclick="loginAdmin()">Se Connecter</button>
+        </div>
+        
+        <div id="adminPanel" class="hidden">
+            <h3>Liste des Utilisateurs</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
+                        <th>Rôle</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-    <label>Email :</label>
-    <input type="email" id="email" required><br>
+    <script>
+        function loginAdmin() {
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.role === 'administrateur') {
+                    document.getElementById('loginForm').classList.add('hidden');
+                    document.getElementById('adminPanel').classList.remove('hidden');
+                    loadUsers();
+                } else {
+                    alert('Accès refusé');
+                }
+            });
+        }
 
-    <label>Téléphone :</label>
-    <input type="text" id="telephone" required><br>
-
-    <label>Rôle :</label>
-    <select id="role">
-        <option value="utilisateur">Utilisateur</option>
-        <option value="administrateur">Administrateur</option>
-    </select><br>
-
-    <button type="submit">Ajouter</button>
-</form>
-
-<script>
-document.getElementById('userForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    fetch('/api/utilisateurs', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            nom: document.getElementById('nom').value,
-            email: document.getElementById('email').value,
-            telephone: document.getElementById('telephone').value,
-            role: document.getElementById('role').value
-        })
-    })
-    .then(response => response.json())
-    .then(data => alert(data.message || data.error))
-    .catch(error => console.error('Erreur:', error));
-});
-</script>
-
+        function loadUsers() {
+            fetch('/api/utilisateurs')
+            .then(response => response.json())
+            .then(users => {
+                const userTable = document.getElementById('userTableBody');
+                userTable.innerHTML = '';
+                users.forEach(user => {
+                    userTable.innerHTML += `<tr>
+                        <td>${user.id}</td>
+                        <td>${user.nom}</td>
+                        <td>${user.email}</td>
+                        <td>${user.telephone}</td>
+                        <td>${user.role}</td>
+                    </tr>`;
+                });
+            });
+        }
+    </script>
 </body>
 </html>
