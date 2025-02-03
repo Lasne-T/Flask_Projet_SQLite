@@ -374,23 +374,17 @@ def get_emprunts():
     
 @app.route('/gestion_stocks', methods=['GET'])
 @require_admin
-def gestion_stocks():
-    """Afficher les stocks de livres avec un tableau et des graphiques."""
+def get_stocks():
+    """Récupérer l'état du stock des livres."""
     conn = create_connection()
     stocks = conn.execute("""
-        SELECT s.id, l.titre, l.auteur, s.quantite
-        FROM stocks s
+        SELECT l.titre, s.quantite FROM stocks s
         JOIN livres l ON s.livre_id = l.id
     """).fetchall()
     conn.close()
 
-    # Préparer les données pour les graphiques
-    labels = [stock[1] for stock in stocks]
-    quantities = [stock[3] for stock in stocks]
-    stock_data = {
-        'labels': labels,
-        'quantities': quantities
-    }
+    return jsonify([{'titre': s[0], 'quantite': s[1]} for s in stocks])
+
 
     return render_template('gestion_stocks.html', stocks=stocks, stock_data=stock_data)
 
